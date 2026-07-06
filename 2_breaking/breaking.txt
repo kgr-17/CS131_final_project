@@ -24,11 +24,26 @@ Script: see snippet below. Run on the FULL file (or one full year).
   print(df.shape)
 
 Record:
-  - Machine RAM:                         ______ GB
+  - Machine RAM:                         121 GB (DGX Spark, unified memory)
   - File size on disk:                   ______ GB
   - Outcome:  MemoryError / killed (OOM) / swapped + wall-clock ______
   - Peak memory before crash:            ______ (screenshot)
   - Screenshot:  screenshots/pandas_oom.png
+
+  NOTE: this box has 121 GB RAM, so pandas won't OOM on a small file. Two ways
+  to force a reproducible crash:
+
+  (1) Cap process memory with ulimit, then read a multi-GB file:
+      $ ( ulimit -v 8000000;   # ~8 GB virtual-memory cap for THIS subshell
+          ~/final_project/.venv/bin/python -c \
+          'import pandas as pd; df=pd.read_json("data/day.json", lines=True); print(df.shape)' )
+      # -> MemoryError / Killed once pandas exceeds 8 GB
+
+  (2) Or run pandas in a memory-limited Docker container:
+      $ docker run --rm -m 8g -v ~/final_project:/w -w /w python:3.12-slim \
+          bash -c "pip install -q pandas && python -c \
+          'import pandas as pd; pd.read_json(\"data/day.json\", lines=True)'"
+      # -> container OOM-killed (exit code 137)
 
 ================================================================
 C. SAME AGGREGATION, TWO WAYS (benchmark table)
