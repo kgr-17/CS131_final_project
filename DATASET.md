@@ -64,3 +64,36 @@ By repo name pattern (case-insensitive): `llm`, `gpt`, `pytorch`, `tensorflow`,
 `deep-learning`, `machine-learning`, `agentic`, `rag-`, … (tune in Phase 1).
 Everything else = "general". This is a heuristic; we document its limits in the
 writeup.
+
+## Initial data-engineering findings (one-hour sample)
+Measured on `2024-01-15-15.json.gz` with jq/awk (see `1_profile/`).
+
+**Cardinality (in a single hour):**
+- distinct repos: **81,373**
+- distinct actors: **66,135**
+- 266,871 events total → most repos/actors appear only once or twice per hour.
+
+**Bots dominate raw activity — a real data-quality issue.** Top actors:
+```
+19295 github-actions[bot]     9936 dependabot[bot]
+17689 inse2233tto (spam)      3137 renovate[bot]
+17660 ion561sdag  (spam)      3324 LMAO-armv8
+```
+The busiest "repos" are automated spam (`.../Projcts9`, 2000+ pushes/hour). So
+**raw event counts overstate human activity** — we should either flag `[bot]`
+actors / filter obvious spam, or report both raw and bot-excluded numbers. Note
+this caveat in the poster.
+
+**PushEvent detail:** avg **4.02 commits per push** (169,030 pushes, 679,685
+commits this hour).
+
+**AI/ML repos already look different (supports our question).** Event mix for
+AI-repo events vs the overall stream:
+
+| Event | AI-repo share | Overall share |
+|-------|--------------:|--------------:|
+| WatchEvent (star) | **16.4%** (363/2208) | 3.6% (9548/266871) |
+
+AI/ML repos are **~4.6× more likely to be *starred*** than the average repo —
+visible in a single hour. Stars (attention/adoption) may be a stronger AI-vs-
+general signal than push volume. Worth a dedicated chart in Phase 4.
