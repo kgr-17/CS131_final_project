@@ -97,3 +97,41 @@ AI-repo events vs the overall stream:
 AI/ML repos are **~4.6× more likely to be *starred*** than the average repo —
 visible in a single hour. Stars (attention/adoption) may be a stronger AI-vs-
 general signal than push volume. Worth a dedicated chart in Phase 4.
+
+## How we get more data (no Google needed to obtain it)
+Every hour of GH Archive is a **public file** at a predictable URL:
+```
+https://data.gharchive.org/YYYY-MM-DD-H.json.gz     (H = 0..23)
+```
+Getting "more data" just means downloading more of these — plain HTTP, no login,
+no token, no Google account. Use the helper script:
+```bash
+cd ~/final_project/1_profile
+./download_gharchive.sh 2024-01-15                # one full day (24 files, ~3 GB)
+./download_gharchive.sh 2024-01-15 2024-01-22     # a date range (inclusive)
+HOURS="0 12" ./download_gharchive.sh 2023-06-01   # only selected hours
+```
+Files land in `~/final_project/data/` (git-ignored); it resumes and skips files
+already present.
+
+### Two different Google services — don't confuse them
+| Service | Used for | Needed to GET data? |
+|---------|----------|---------------------|
+| **BigQuery** | SQL queries on Google's servers | ❌ Never — we don't use it |
+| **GCS + Dataproc** | Storage bucket + Spark cluster (Phase 3) | ⚠️ Only in Phase 3 |
+
+Acquisition pipeline:
+```
+data.gharchive.org  --wget-->  DGX (data/)  --gsutil cp-->  GCS bucket  -->  PySpark on Dataproc
+   public HTTP,                 Phase 1-2:                    Phase 3: needs
+   no Google                    CLI + pandas                  YOUR GCP account
+```
+- **Phases 1-2** (CLI profiling, pandas breaking): download to the DGX — pure
+  HTTP, no Google at all.
+- **Phase 3** (scale with Spark): same `wget`, then upload **once** to a GCS
+  bucket with `gsutil cp`; Spark reads from `gs://…`. GCS is only *where the raw
+  files live for the cluster* — not a different way of obtaining them.
+
+**Volume:** ~3 GB compressed / ~24 GB uncompressed per day; ~8 days clears the
+50 M-row floor (~25 GB). Disk has 2.8 TB free. Keep only enough on the DGX for
+CLI/pandas work; the full pile lives in GCS for Phase 3.
