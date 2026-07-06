@@ -1,0 +1,70 @@
+CS 131 Final Project — Phase 1: Profiling (command line only)
+Goal: characterize the dataset WITHOUT loading it into memory.
+Rule: prefix EVERY command with `time` so we measure computational cost.
+Paste each exact command AND its timed output below.
+
+Dataset: GH Archive (hourly public GitHub events, gzip NDJSON)
+Download example (one hour):  https://data.gharchive.org/2024-01-15-15.json.gz
+Download a range (bash):
+  for d in 2024-01-{01..15}; do for h in {0..23}; do \
+    wget -q https://data.gharchive.org/$d-$h.json.gz; done; done
+
+================================================================
+0. PROVE THE SIZE FLOOR (> 5 GB and > 50 million rows)
+================================================================
+# Total on-disk size (compressed):
+$ time du -ch *.json.gz | tail -1
+# TODO paste output
+
+# Uncompressed size without extracting (stream through wc):
+$ time zcat *.json.gz | wc -c
+# TODO paste output   -> must be > 5 GB (5000000000 bytes)
+
+# Row count = one JSON event per line:
+$ time zcat *.json.gz | wc -l
+# TODO paste output   -> must be > 50000000
+
+================================================================
+1. PEEK AT THE SCHEMA (head / tail / jq)
+================================================================
+$ time zcat 2024-01-15-15.json.gz | head -1 | jq .
+# TODO paste one pretty-printed event
+
+$ time zcat 2024-01-15-15.json.gz | head -1 | jq 'keys'
+# TODO paste top-level keys (type, actor, repo, payload, created_at, ...)
+
+================================================================
+2. TOP CATEGORIES / CARDINALITY (sort | uniq -c | sort -nr)
+================================================================
+# Event-type distribution:
+$ time zcat *.json.gz | jq -r '.type' | sort | uniq -c | sort -nr
+# TODO paste output
+
+# Distinct actors (cardinality):
+$ time zcat *.json.gz | jq -r '.actor.login' | sort -u | wc -l
+# TODO paste output
+
+================================================================
+3. NUMERIC AGGREGATE (awk sum / average)
+================================================================
+# Example: average number of commits per PushEvent
+$ time zcat *.json.gz | jq -r 'select(.type=="PushEvent") | .payload.size' \
+    | awk '{s+=$1; n++} END{printf "sum=%d avg=%.3f n=%d\n", s, s/n, n}'
+# TODO paste output
+
+================================================================
+4. FILTERING COUNTS (grep -c)
+================================================================
+# How many events mention an AI/ML repo keyword (fast pre-filter):
+$ time zcat *.json.gz | grep -c -iE '"name":"[^"]*(llm|gpt|pytorch|tensorflow|langchain|diffus|transformer)'
+# TODO paste output
+
+# PullRequestEvents only:
+$ time zcat *.json.gz | grep -c '"type":"PullRequestEvent"'
+# TODO paste output
+
+================================================================
+NOTES / OBSERVATIONS (for the "Profiling" poster section)
+================================================================
+- Wall-clock vs data size:
+- Why streaming works where load-into-memory would not:

@@ -1,0 +1,49 @@
+CS 131 Final Project — Phase 2: The Breaking Point
+Goal: make the in-memory tools fail on purpose, reproducibly, and document it.
+Screenshots go in ./screenshots/ and are referenced by filename below.
+
+================================================================
+A. EXCEL — hits the row cap / won't open
+================================================================
+Steps:
+  1. Convert one chunk of events to CSV (or use one day flattened).
+  2. File > Open in Excel.
+Expected failure: Excel caps at 1,048,576 rows; it truncates or refuses.
+Record:
+  - Rows in the file we tried to open:   (from `wc -l`) ______
+  - Excel's row limit:                   1,048,576
+  - What Excel actually did:             truncated / froze / error
+  - Screenshot:  screenshots/excel_rowcap.png
+
+================================================================
+B. PANDAS — out of memory / very slow
+================================================================
+Script: see snippet below. Run on the FULL file (or one full year).
+  import pandas as pd
+  df = pd.read_csv("gharchive_full.csv")   # or read_json lines=True
+  print(df.shape)
+
+Record:
+  - Machine RAM:                         ______ GB
+  - File size on disk:                   ______ GB
+  - Outcome:  MemoryError / killed (OOM) / swapped + wall-clock ______
+  - Peak memory before crash:            ______ (screenshot)
+  - Screenshot:  screenshots/pandas_oom.png
+
+================================================================
+C. SAME AGGREGATION, TWO WAYS (benchmark table)
+================================================================
+Pick ONE aggregation (e.g., count events per type) and run it:
+  (a) command line (streaming)
+  (b) PySpark (whole thing)
+
+| Method            | Tool        | Wall-clock | Peak memory | Completed? |
+|-------------------|-------------|------------|-------------|------------|
+| Load-into-memory  | pandas      |            |             | NO (OOM)   |
+| Streaming         | CLI pipe    |            |             | yes        |
+| Distributed       | PySpark     |            |             | yes        |
+
+================================================================
+NOTES (for the "Breaking" poster section)
+================================================================
+- The one-sentence takeaway: why in-memory tools break here and streaming/distributed don't.
