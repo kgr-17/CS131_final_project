@@ -2,7 +2,7 @@
 
 **Title:** From Code to Copilots: Measuring the Rise of AI/ML Open-Source Activity on GitHub (2021–2026)
 
-**Members:** Yixu Liu · _<partner name>_
+**Members:** Yixu Liu · Arushi Nirmal
 
 Open-source development shifted hard toward AI/ML over the last five years, but
 "everyone knows AI is booming" is an assumption, not a measurement. **Motivation:**

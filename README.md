@@ -1,7 +1,7 @@
 # CS 131 Final Project — Big-Data Analysis of GitHub Activity
 
 **Course:** CS 131 · **Format:** Pairs · **Duration:** ~4 weeks
-**Members:** Yixu Liu (017406857) · _<partner name — Canvas People tab>_
+**Members:** Yixu Liu (017406857) · Arushi Nirmal
 **Repo:** https://github.com/kgr-17/CS131_final_project
 **Presentation:** August 3 (poster on laptop screen)
 
