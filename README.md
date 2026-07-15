@@ -55,6 +55,7 @@ structure; used only if GH Archive is rejected in proposal feedback.
 CS131_final_project/       ← repo root
 ├── README.md              ← this file
 ├── RULES.md               ← collaboration + workflow rules (READ FIRST)
+├── TEAMWORK.md            ← division of work: who owns which phase
 ├── 0_proposal/            ← one-page proposal PDF submitted to Canvas
 ├── 1_profile/             ← Phase 1: CLI profiling (no loading into memory)
 │   └── profiling.txt        exact commands + timed results
@@ -88,6 +89,7 @@ data read directly from a **GCS** bucket via `gs://…`.
 ## Reproducing
 
 Each phase directory documents its own exact commands. Start with
-[`RULES.md`](RULES.md) for the workflow, then work the phases in order 1 → 4.
-See [`0_proposal/proposal.md`](0_proposal/proposal.md) for the one-page proposal
-that was submitted to Canvas.
+[`RULES.md`](RULES.md) for the workflow and [`TEAMWORK.md`](TEAMWORK.md) for who
+owns each phase, then work the phases in order 1 → 4. See
+[`0_proposal/proposal.md`](0_proposal/proposal.md) for the one-page proposal that
+was submitted to Canvas.
