@@ -1,4 +1,4 @@
-# CS 131 Final Project — Big-Data Analysis of GitHub Activity
+CS 131 Final Project — Big-Data Analysis of GitHub Activity
 
 **Course:** CS 131 · **Format:** Pairs · **Duration:** ~4 weeks
 **Members:** Yixu Liu (017406857) · Arushi Nirmal
@@ -7,7 +7,7 @@
 
 ---
 
-## Question
+Question
 
 > **How has open-source activity around AI/ML repositories changed compared with
 > general software-development repositories from 2021 to 2026?**
@@ -22,7 +22,7 @@ Secondary questions we can answer from the same data:
 - Which repos/orgs show the fastest growth in public activity?
 - Did AI-repo activity jump after specific tool releases?
 
-## Dataset
+Dataset
 
 **GH Archive** (https://www.gharchive.org/) — an hourly archive of the public
 GitHub event timeline. Each hour is one gzip-compressed newline-delimited JSON
@@ -69,7 +69,7 @@ CS131_final_project/       ← repo root
     └── poster.pdf           final poster (links back to this repo)
 ```
 
-## Milestones
+Milestones
 
 | Week | Milestone | Status |
 |------|-----------|--------|
@@ -78,7 +78,7 @@ CS131_final_project/       ← repo root
 | 3 | Phase 3 — PySpark on Dataproc + 1/2/4-worker scaling | ☐ |
 | 4 | Phase 4 — answer the question, visualize, poster | ☐ |
 
-## Tools
+Tools
 
 CLI: `zcat`/`gunzip`, `wc`, `jq`, `grep -c`, `cut`, `awk`, `sort`, `uniq -c`,
 `time` · Python: `pandas` (to break it) · **PySpark** on **GCP Dataproc**,
@@ -86,7 +86,7 @@ data read directly from a **GCS** bucket via `gs://…`.
 
 ---
 
-## Reproducing
+Reproducing
 
 Each phase directory documents its own exact commands. Start with
 [`RULES.md`](RULES.md) for the workflow and [`TEAMWORK.md`](TEAMWORK.md) for who
